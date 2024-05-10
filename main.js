@@ -1,36 +1,80 @@
-import * as THREE from'three';
-const scene= new THREE .Scene();
-const cubeGeometry= new THREE.BoxGeometry(1,1,1);
-const cubeMaterial =new THREE.MeshBasicMaterial({color: "red"})
-const cubeMesh =  new THREE.Mesh(
-  cubeGeometry,
-  cubeMaterial
-);
-// console.log(cubeMesh);
-// console.log(scene);
-scene.add( cubeMesh);
-// scene.add( cubeMesh);
-//initialise Camera
-console.log( window.innerWidth, window.innerHeight);
-const Camera = new THREE.PerspectiveCamera( 60,innerWidth/innerHeight, 1, 50);
- scene.add(
-  Camera
- );
- Camera.position.z = 5;
- // initiallise the render
- const canvas= document.querySelector('canvas.three_js');
- console.log(canvas);
- const renderer = new THREE.WebGLRenderer(
-  {
-    canvas:canvas
-  }
- )
- renderer.setSize(1000,500);
-//  renderer.render( scene,Camera)
- function animate(){
-  requestAnimationFrame(animate);
-  cubeMesh.rotation.x +=0.01;
-  cubeMesh.rotation.y += 0.02; 
-  renderer.render( scene,Camera)
-}
-animate();
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const scene = new THREE.Scene();
+
+const loader = new GLTFLoader();
+
+loader.load('./modal/untitled.glb', function (gltf) {
+    scene.add(gltf.scene);
+}, undefined, function (error) {
+    console.error(error);
+});
+
+
+const Camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 50);
+Camera.position.set(0, 0, 5);
+scene.add(Camera);
+const toplight= new THREE.DirectionalLight(0xffffff,10);
+toplight.position.set(300,300,300)
+toplight.castShadow=true;
+scene.add(toplight);
+
+const canvas = document.querySelector('canvas.three_js');
+const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+renderer.setSize(1170, 600);
+
+const control = new OrbitControls(Camera, canvas);
+control.enableDamping = true;
+control.autoRotate = true;
+
+const renderloop = () => {
+    control.update();
+    renderer.render(scene, Camera);
+    window.requestAnimationFrame(renderloop);
+};
+renderloop();
+
+// import * as THREE from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+// const scene = new THREE.Scene();
+
+// const loader = new GLTFLoader();
+
+// loader.load('./modal/earth 2.glb', function (gltf) {
+//     scene.add(gltf.scene);
+// }, undefined, function (error) {
+//     console.error(error);
+// });
+
+
+// const Camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 50);
+// Camera.position.set(0, 0, 5);
+// scene.add(Camera);
+// const toplight= new THREE.DirectionalLight(0xffffff,10);
+// toplight.position.set(300,300,300)
+// toplight.castShadow=true;
+// scene.add(toplight);
+
+// const canvas = document.querySelector('canvas.three_js');
+// const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+// renderer.setSize(1170, 600);
+
+// const control = new OrbitControls(Camera, canvas);
+// control.enableDamping = true;
+// control.autoRotate = true;
+
+// const renderloop = () => {
+//     control.update();
+//     renderer.render(scene, Camera);
+//     window.requestAnimationFrame(renderloop);
+// };
+// renderloop();
+
+
+
+
+
